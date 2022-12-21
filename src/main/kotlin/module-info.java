@@ -5,5 +5,5 @@ module com.san68bot.learningsplines {
 
 
     opens com.san68bot.learningsplines to javafx.fxml;
-    exports com.san68bot.learningsplines;
+    exports com.san68bot.learningsplines.app;
 }

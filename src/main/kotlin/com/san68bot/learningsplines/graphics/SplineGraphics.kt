@@ -1,5 +1,6 @@
-package com.san68bot.learningsplines
+package com.san68bot.learningsplines.graphics
 
+import com.san68bot.learningsplines.app.Splines
 import javafx.scene.control.Label
 import javafx.scene.effect.InnerShadow
 import javafx.scene.paint.Color
@@ -13,7 +14,7 @@ object SplineGraphics {
         fill = Color.rgb(255, 255, 255)
     }
 
-    val backgroundRect = Rectangle(940.0, 0.0, 500.0, 900.0).apply {
+    val backgroundRect = Rectangle(940.0, 0.0, 500.0, Splines.scene_height).apply {
         fill = Color.rgb(31, 38, 46)
         effect = InnerShadow(35.0, Color.rgb(0, 0, 0)).apply {
             width = 50.0
@@ -43,5 +44,6 @@ object SplineGraphics {
         layoutY = 100.0
     }
 
-    val graphics = listOf(mapRect, backgroundRect, telemetryText, telemetryRect, telemetry)
+    val graphics =
+        listOf(mapRect, backgroundRect, telemetryText, telemetryRect, telemetry)
 }

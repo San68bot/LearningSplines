@@ -1,5 +1,6 @@
 package com.san68bot.learningsplines.graphics
 
+import com.san68bot.learningsplines.app.Globals
 import com.san68bot.learningsplines.app.Globals.telemetryManager
 import com.san68bot.learningsplines.graphics.SplineGraphics.x_bounds
 import com.san68bot.learningsplines.graphics.SplineGraphics.y_bounds
@@ -23,7 +24,10 @@ class DynamicPoint(
 
     private fun update() {
         setOnMousePressed { set(it) }
-        setOnMouseDragged { set(it) }
+        setOnMouseDragged {
+            Globals.update()
+            set(it)
+        }
     }
 
     fun set(e: MouseEvent) = set(e.sceneX, e.sceneY)

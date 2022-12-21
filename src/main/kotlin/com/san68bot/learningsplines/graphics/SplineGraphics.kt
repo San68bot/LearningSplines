@@ -10,11 +10,11 @@ import javafx.scene.text.Text
 import javafx.scene.text.TextAlignment
 
 object SplineGraphics {
-    val mapRect = Rectangle(0.0, 0.0, Splines.scene_width, Splines.scene_height).apply {
-        fill = Color.rgb(255, 255, 255)
+    private val mapRect = Rectangle(0.0, 0.0, Splines.scene_width, Splines.scene_height).apply {
+        fill = Color.rgb(30, 32, 41)
     }
 
-    val backgroundRect = Rectangle(940.0, 0.0, 500.0, Splines.scene_height).apply {
+    private val backgroundRect = Rectangle(940.0, 0.0, 500.0, Splines.scene_height).apply {
         fill = Color.rgb(31, 38, 46)
         effect = InnerShadow(35.0, Color.rgb(0, 0, 0)).apply {
             width = 50.0
@@ -22,12 +22,12 @@ object SplineGraphics {
         }
     }
 
-    val telemetryText = Text(1082.0, 50.0, "Telemetry").apply {
+    private val telemetryText = Text(1082.0, 50.0, "Telemetry").apply {
         font = Font("Avenir Book", 48.0)
         fill = Color.rgb(255, 255, 255)
     }
 
-    val telemetryRect = Rectangle(965.0, 75.0, 450.0, 700.0).apply {
+    private val telemetryRect = Rectangle(965.0, 75.0, 450.0, 700.0).apply {
         fill = Color.rgb(21, 26, 41)
         arcWidth = 50.0
         arcHeight = 50.0
@@ -49,9 +49,4 @@ object SplineGraphics {
 
     val x_bounds = 1.0 to 939.5
     val y_bounds = 2.0 to 792.0
-
-    val green: Color = Color.rgb(75, 228, 135)
-    val yellow: Color = Color.rgb(252, 188, 68)
-    val red: Color = Color.rgb(252, 13, 27)
-    val blue: Color = Color.rgb(19, 122, 227)
 }

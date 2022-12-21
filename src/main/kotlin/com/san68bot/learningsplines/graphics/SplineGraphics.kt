@@ -46,4 +46,12 @@ object SplineGraphics {
 
     val graphics =
         listOf(mapRect, backgroundRect, telemetryText, telemetryRect, telemetry)
+
+    val x_bounds = 1.0 to 939.5
+    val y_bounds = 2.0 to 792.0
+
+    val green: Color = Color.rgb(75, 228, 135)
+    val yellow: Color = Color.rgb(252, 188, 68)
+    val red: Color = Color.rgb(252, 13, 27)
+    val blue: Color = Color.rgb(19, 122, 227)
 }

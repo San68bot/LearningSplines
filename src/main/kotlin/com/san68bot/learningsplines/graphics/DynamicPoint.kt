@@ -24,10 +24,7 @@ class DynamicPoint(
 
     private fun update() {
         setOnMousePressed { set(it) }
-        setOnMouseDragged {
-            Globals.update()
-            set(it)
-        }
+        setOnMouseDragged { set(it) }
     }
 
     fun set(e: MouseEvent) = set(e.sceneX, e.sceneY)
@@ -41,6 +38,7 @@ class DynamicPoint(
         x += translateX
         y += translateY
 
+        Globals.update()
         telemetryManager.add(id, "$id: ($x, $y)").update()
     }
 }

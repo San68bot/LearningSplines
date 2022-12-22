@@ -1,42 +1,36 @@
 package com.san68bot.learningsplines.splines
 
-import com.san68bot.learningsplines.graphics.DynamicPoint
+import com.san68bot.learningsplines.graphics.*
+import com.san68bot.learningsplines.math.*
+import javafx.scene.Group
 import javafx.scene.layout.Pane
-import javafx.scene.paint.Color
-import javafx.scene.shape.Line
+import javafx.scene.shape.Circle
+
+data class LinearEvaluation(val p1: Point, val p2: Point) {
+    fun x(t: Double) = (1.0 - t) * p1.x + t * p2.x
+    fun y(t: Double) = (1.0 - t) * p1.y + t * p2.y
+    operator fun get(t: Double) = Point(x(t), y(t))
+}
 
 class LinearInterpolation(
-    private val pane: Pane,
+    pane: Pane,
     private val points: Array<DynamicPoint>
 ) {
-    private val lineList = ArrayList<Line>(points.size - 1)
+    private val pathGroup = Group()
 
     init {
-        setup()
-        update()
-    }
-
-    private fun setup() {
-        (0 until points.size - 1).forEach { i ->
-            lineList.add(
-                Line(points[i].x, points[i].y, points[i+1].x, points[i+1].y).apply {
-                    fill = Color.WHITE
-                    stroke = Color.WHITE
-                    strokeWidth = 5.0
-                }
-            )
-        }
-        pane.children.addAll(lineList)
+        pane.children.addAll(pathGroup)
         pane.children.addAll(points)
+        refresh()
     }
 
-    fun update() {
-        lineList.forEachIndexed { i, line ->
-            line.apply {
-                startX = points[i].x
-                startY = points[i].y
-                endX = points[i+1].x
-                endY = points[i+1].y
+    fun refresh() {
+        pathGroup.children.clear()
+        (0 until points.size - 1).forEach { i ->
+            LinearEvaluation(Point(points[i].x, points[i].y), Point(points[i+1].x, points[i+1].y)).apply {
+                (0.0..1.0 step 0.01).forEach { t ->
+                    pathGroup.children.add(Circle(x(t), y(t), 1.5).apply { fill = BetterColors.purple })
+                }
             }
         }
     }

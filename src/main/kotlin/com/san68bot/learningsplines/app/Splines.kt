@@ -20,7 +20,7 @@ class Splines : Application() {
         ))
 
         Globals.toUpdate {
-            li.update()
+            li.refresh()
         }
 
         stage.apply {

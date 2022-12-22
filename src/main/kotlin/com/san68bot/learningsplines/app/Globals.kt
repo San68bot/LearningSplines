@@ -9,10 +9,6 @@ object Globals {
 
     var updateBlock: () -> Unit = {}
 
-    fun toUpdate(block: () -> Unit) {
-        updateBlock = block
-    }
-
     fun update() {
         updateBlock.invoke()
     }

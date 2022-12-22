@@ -1,5 +1,6 @@
 package com.san68bot.learningsplines.splines
 
+import com.san68bot.learningsplines.app.Globals
 import com.san68bot.learningsplines.app.Globals.telemetryManager
 import com.san68bot.learningsplines.graphics.*
 import com.san68bot.learningsplines.math.*
@@ -23,6 +24,7 @@ class LinearInterpolation(
     private var totalLength = 0.0
 
     init {
+        Globals.updateBlock = { refresh() }
         pane.children.addAll(pathGroup)
         pane.children.addAll(points)
         refresh()

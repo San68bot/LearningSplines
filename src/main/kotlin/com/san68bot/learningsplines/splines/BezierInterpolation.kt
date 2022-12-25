@@ -12,6 +12,11 @@ import javafx.scene.shape.Circle
 import kotlin.math.hypot
 import kotlin.math.pow
 
+/**
+ * No local control
+ * Doesn't pass through most points
+ * Expensive to calculate
+ */
 class BezierInterpolation(
     pane: Pane,
     private val points: Array<DynamicPoint>,
@@ -35,7 +40,7 @@ class BezierInterpolation(
                 CalculationMethod.bernstein -> bernstein(t, points[0], points[1], points[2], points[3])
             }
             pathGroup.children.add(Circle(eval.x, eval.y, 1.5).apply { fill = BetterColors.purple })
-            arc_length += hypot((eval.x - prev_eval.x), (eval.y - prev_eval.y))
+            arc_length += eval distance prev_eval
             prev_eval = eval
         }
         log()

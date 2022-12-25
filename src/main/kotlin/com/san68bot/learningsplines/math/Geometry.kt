@@ -24,7 +24,7 @@ data class Point(var x: Double, var y: Double) {
     operator fun unaryMinus() =
         Point(-x, -y)
 
-    fun distance(p: Point) =
+    infix fun distance(p: Point) =
         sqrt((x - p.x).pow(2) + (y - p.y).pow(2))
 
     override fun toString(): String = "($x, $y)"

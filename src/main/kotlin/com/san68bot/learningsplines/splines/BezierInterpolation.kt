@@ -9,35 +9,68 @@ import com.san68bot.learningsplines.math.round
 import com.san68bot.learningsplines.math.step
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Circle
+import kotlin.math.pow
 
 class BezierInterpolation(
     pane: Pane,
-    private val points: Array<DynamicPoint>
+    private val points: Array<DynamicPoint>,
+    private val calculationMethod: CalculationMethod
 ): Interpolation(pane, points) {
     init {
         refresh()
     }
 
+    enum class CalculationMethod {
+        deCasteljau,
+        bernstein
+    }
+
     override fun refresh() {
         super.refresh()
         (0.0..1.0 step 0.01).forEach { t ->
-            val lerp = recursive_lerp(t, ArrayList(points.map { Point(it.x, it.y) }))
-            pathGroup.children.add(Circle(lerp.x, lerp.y, 1.5).apply { fill = BetterColors.purple })
+            val eval = when(calculationMethod) {
+                CalculationMethod.deCasteljau -> deCasteljau(t, ArrayList(points.map { Point(it.x, it.y) }))
+                CalculationMethod.bernstein -> bernstein(t, points[0], points[1], points[2], points[3])
+            }
+            pathGroup.children.add(Circle(eval.x, eval.y, 1.5).apply { fill = BetterColors.purple })
         }
         log()
     }
 
-    private fun recursive_lerp(t: Double, points: ArrayList<Point>): Point {
+    /**
+     * DeCasteljau Algorithm
+     * Essentially Lerp until theres nothing left to lerp
+     */
+    private fun deCasteljau(t: Double, points: ArrayList<Point>): Point {
         return when (points.size) {
             2 -> lerp(t, points[0], points[1])
-            else -> recursive_lerp(t, ArrayList((0 until points.size - 1).map { i ->
+            else -> deCasteljau(t, ArrayList((0 until points.size - 1).map { i ->
                 lerp(t, points[i], points[i+1])
             }))
         }
     }
 
+    /**
+     * Bernstein Algorithm
+     * Expanded out form of DeCasteljau Algorithm, combined all the lerps into one big equation
+     * Essentially a vector of each component scaled by the point
+     */
+    private fun bernstein(t: Double, p0: Double, p1: Double, p2: Double, p3: Double): Double {
+        return p0 * (-t.pow(3) + 3*t.pow(2) - 3*t + 1) +
+               p1 * (3*t.pow(3) - 6*t.pow(2) + 3*t) +
+               p2 * (-3*t.pow(3) + 3*t.pow(2)) +
+               p3 * (t.pow(3))
+    }
+    private fun bernstein(t: Double, p0: DynamicPoint, p1: DynamicPoint, p2: DynamicPoint, p3: DynamicPoint): Point {
+        return Point(
+            bernstein(t, p0.x, p1.x, p2.x, p3.x),
+            bernstein(t, p0.y, p1.y, p2.y, p3.y)
+        )
+    }
+
     override fun log() {
         telemetryManager
+            .add("Method", "Bezier Calculation Method: $calculationMethod")
             .add("Arc Length", "Arc Length: ${arc_length round 3}")
             .update()
     }

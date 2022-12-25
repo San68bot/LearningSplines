@@ -27,7 +27,7 @@ class Splines : Application() {
             DynamicPoint(350.0, 300.0, 8.0, "Point 2", BetterColors.blue, BetterColors.orange),
             DynamicPoint(500.0, 300.0, 8.0, "Point 3", BetterColors.blue, BetterColors.orange),
             DynamicPoint(550.0, 500.0, 8.0, "Point 4", BetterColors.blue, BetterColors.orange)
-        ))
+        ), BezierInterpolation.CalculationMethod.bernstein)
     }
 
     companion object {

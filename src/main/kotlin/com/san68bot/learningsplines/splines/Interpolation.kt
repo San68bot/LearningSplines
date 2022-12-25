@@ -18,6 +18,9 @@ abstract class Interpolation(
         pane.children.addAll(points)
     }
 
-    open fun refresh() {}
+    open fun refresh() {
+        arc_length = 0.0
+        pathGroup.children.clear()
+    }
     open fun log() {}
 }

@@ -3,6 +3,7 @@ package com.san68bot.learningsplines.splines
 import com.san68bot.learningsplines.app.Globals.telemetryManager
 import com.san68bot.learningsplines.graphics.*
 import com.san68bot.learningsplines.math.*
+import com.san68bot.learningsplines.math.SplineMath.lerp
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Circle
 import kotlin.math.*
@@ -17,13 +18,12 @@ class LinearInterpolation(
 
     data class LinearEvaluation(val x1: Double, val y1: Double, val x2: Double, val y2: Double) {
         val distance get() = hypot((x2 - x1), (y2 - y1))
-        fun x(t: Double) = (1.0 - t) * x1 + t * x2
-        fun y(t: Double) = (1.0 - t) * y1 + t * y2
+        fun x(t: Double) = lerp(t, x1, x2)
+        fun y(t: Double) = lerp(t, y1, y2)
     }
 
     override fun refresh() {
-        arc_length = 0.0
-        pathGroup.children.clear()
+        super.refresh()
         (0 until points.size - 1).forEach { i ->
             LinearEvaluation(points[i].x, points[i].y, points[i+1].x, points[i+1].y).apply {
                 arc_length += distance

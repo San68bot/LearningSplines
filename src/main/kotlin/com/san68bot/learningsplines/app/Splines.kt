@@ -1,6 +1,7 @@
 package com.san68bot.learningsplines.app
 
 import com.san68bot.learningsplines.graphics.*
+import com.san68bot.learningsplines.splines.BezierInterpolation
 import com.san68bot.learningsplines.splines.LinearInterpolation
 import javafx.application.Application
 import javafx.application.Application.launch
@@ -21,11 +22,11 @@ class Splines : Application() {
     }
 
     private fun splines() {
-        LinearInterpolation(mainPane, arrayOf(
-            DynamicPoint(300.0, 300.0, 8.0, "Point 1", BetterColors.blue),
-            DynamicPoint(500.0, 300.0, 8.0, "Point 2", BetterColors.blue),
-            DynamicPoint(500.0, 500.0, 8.0, "Point 3", BetterColors.blue),
-            DynamicPoint(300.0, 500.0, 8.0, "Point 4", BetterColors.blue)
+        BezierInterpolation(mainPane, arrayOf(
+            DynamicPoint(300.0, 500.0, 8.0, "Point 1", BetterColors.blue, BetterColors.orange),
+            DynamicPoint(350.0, 300.0, 8.0, "Point 2", BetterColors.blue, BetterColors.orange),
+            DynamicPoint(500.0, 300.0, 8.0, "Point 3", BetterColors.blue, BetterColors.orange),
+            DynamicPoint(550.0, 500.0, 8.0, "Point 4", BetterColors.blue, BetterColors.orange)
         ))
     }
 

@@ -14,17 +14,25 @@ class DynamicPoint(
     var y: Double,
     private val r: Double,
     private val id: String,
-    color: Color
+    private val color1: Color,
+    private val color2: Color = color1,
 ): Circle(x, y, r) {
     init {
-        fill = color
+        fill = color1
         telemetryManager.add(id, "$id: ($x, $y)").update()
         update()
     }
 
+    private fun setColor1() { fill = color1 }
+    private fun setColor2() { fill = color2 }
+
     private fun update() {
-        setOnMousePressed { set(it) }
+        setOnMousePressed {
+            setColor2()
+            set(it)
+        }
         setOnMouseDragged { set(it) }
+        setOnMouseReleased { setColor1() }
     }
 
     fun set(e: MouseEvent) = set(e.sceneX, e.sceneY)

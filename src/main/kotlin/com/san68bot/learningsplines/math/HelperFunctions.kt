@@ -26,6 +26,5 @@ fun angleWrap(angle: Double): Double {
     return angle0
 }
 
-
 fun clamp(value: Double, min: Double, max: Double): Double = min(max(value, min), max)
 fun clamp(value: Double, range: ClosedFloatingPointRange<Double>): Double = clamp(value, range.start, range.endInclusive)

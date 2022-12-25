@@ -49,4 +49,6 @@ class DynamicPoint(
         Globals.update()
         telemetryManager.add(id, "$id: ($x, $y)").update()
     }
+
+    fun asPoint() = Point(x, y)
 }

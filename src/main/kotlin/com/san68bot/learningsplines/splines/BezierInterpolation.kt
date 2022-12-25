@@ -9,6 +9,7 @@ import com.san68bot.learningsplines.math.round
 import com.san68bot.learningsplines.math.step
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Circle
+import kotlin.math.hypot
 import kotlin.math.pow
 
 class BezierInterpolation(
@@ -26,6 +27,7 @@ class BezierInterpolation(
     }
 
     override fun refresh() {
+        var prev_eval = points[0].asPoint()
         super.refresh()
         (0.0..1.0 step 0.01).forEach { t ->
             val eval = when(calculationMethod) {
@@ -33,6 +35,8 @@ class BezierInterpolation(
                 CalculationMethod.bernstein -> bernstein(t, points[0], points[1], points[2], points[3])
             }
             pathGroup.children.add(Circle(eval.x, eval.y, 1.5).apply { fill = BetterColors.purple })
+            arc_length += hypot((eval.x - prev_eval.x), (eval.y - prev_eval.y))
+            prev_eval = eval
         }
         log()
     }

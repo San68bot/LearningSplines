@@ -1,7 +1,7 @@
 package com.san68bot.learningsplines.splines
 
 import com.san68bot.learningsplines.app.Globals
-import com.san68bot.learningsplines.graphics.DynamicPoint
+import com.san68bot.learningsplines.graphics.point.DynamicPoint
 import javafx.scene.Group
 import javafx.scene.layout.Pane
 

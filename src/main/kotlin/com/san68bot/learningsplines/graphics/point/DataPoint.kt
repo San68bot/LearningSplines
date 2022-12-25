@@ -1,4 +1,4 @@
-package com.san68bot.learningsplines.math
+package com.san68bot.learningsplines.graphics.point
 
 import kotlin.math.*
 

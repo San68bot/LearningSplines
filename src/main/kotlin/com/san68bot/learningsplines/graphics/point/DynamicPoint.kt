@@ -1,4 +1,4 @@
-package com.san68bot.learningsplines.graphics
+package com.san68bot.learningsplines.graphics.point
 
 import com.san68bot.learningsplines.app.Globals
 import com.san68bot.learningsplines.app.Globals.telemetryManager

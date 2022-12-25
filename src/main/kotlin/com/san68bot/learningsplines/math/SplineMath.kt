@@ -1,5 +1,7 @@
 package com.san68bot.learningsplines.math
 
+import com.san68bot.learningsplines.graphics.point.DataPoint
+
 object SplineMath {
     /**
      * Linear Interpolation as a function of t

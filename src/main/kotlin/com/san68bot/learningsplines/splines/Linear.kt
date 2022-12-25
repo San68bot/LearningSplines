@@ -2,6 +2,7 @@ package com.san68bot.learningsplines.splines
 
 import com.san68bot.learningsplines.app.Globals.telemetryManager
 import com.san68bot.learningsplines.graphics.*
+import com.san68bot.learningsplines.graphics.point.DynamicPoint
 import com.san68bot.learningsplines.math.*
 import com.san68bot.learningsplines.math.SplineMath.lerp
 import javafx.scene.layout.Pane

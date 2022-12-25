@@ -1,6 +1,7 @@
 package com.san68bot.learningsplines.app
 
 import com.san68bot.learningsplines.graphics.*
+import com.san68bot.learningsplines.graphics.point.DynamicPoint
 import com.san68bot.learningsplines.splines.Bezier
 import javafx.application.Application
 import javafx.application.Application.launch

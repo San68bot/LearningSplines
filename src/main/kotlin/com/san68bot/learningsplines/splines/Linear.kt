@@ -8,9 +8,9 @@ import javafx.scene.layout.Pane
 import javafx.scene.shape.Circle
 import kotlin.math.*
 
-class LinearInterpolation(
+class Linear(
     pane: Pane,
-    private val points: Array<DynamicPoint>
+    private val points: ArrayList<DynamicPoint>
 ): Interpolation(pane, points) {
     init {
         refresh()

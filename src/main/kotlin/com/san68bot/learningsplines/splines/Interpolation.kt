@@ -7,7 +7,7 @@ import javafx.scene.layout.Pane
 
 abstract class Interpolation(
     pane: Pane,
-    points: Array<DynamicPoint>,
+    points: ArrayList<DynamicPoint>,
     val pathGroup: Group = Group()
 ) {
     var arc_length: Double = 0.0

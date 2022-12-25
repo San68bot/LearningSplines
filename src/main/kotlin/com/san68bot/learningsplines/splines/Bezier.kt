@@ -3,13 +3,12 @@ package com.san68bot.learningsplines.splines
 import com.san68bot.learningsplines.app.Globals.telemetryManager
 import com.san68bot.learningsplines.graphics.BetterColors
 import com.san68bot.learningsplines.graphics.DynamicPoint
-import com.san68bot.learningsplines.math.Point
+import com.san68bot.learningsplines.math.DataPoint
 import com.san68bot.learningsplines.math.SplineMath.lerp
 import com.san68bot.learningsplines.math.round
 import com.san68bot.learningsplines.math.step
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Circle
-import kotlin.math.hypot
 import kotlin.math.pow
 
 /**
@@ -17,9 +16,9 @@ import kotlin.math.pow
  * Doesn't pass through most points
  * Expensive to calculate
  */
-class BezierInterpolation(
+class Bezier(
     pane: Pane,
-    private val points: Array<DynamicPoint>,
+    private val points: ArrayList<DynamicPoint>,
     private val calculationMethod: CalculationMethod
 ): Interpolation(pane, points) {
     init {
@@ -32,11 +31,11 @@ class BezierInterpolation(
     }
 
     override fun refresh() {
-        var prev_eval = points[0].asPoint()
+        var prev_eval = points[0].dataPoint()
         super.refresh()
         (0.0..1.0 step 0.01).forEach { t ->
             val eval = when(calculationMethod) {
-                CalculationMethod.deCasteljau -> deCasteljau(t, ArrayList(points.map { Point(it.x, it.y) }))
+                CalculationMethod.deCasteljau -> deCasteljau(t, ArrayList(points.map { DataPoint(it.x, it.y) }))
                 CalculationMethod.bernstein -> bernstein(t, points[0], points[1], points[2], points[3])
             }
             pathGroup.children.add(Circle(eval.x, eval.y, 1.5).apply { fill = BetterColors.purple })
@@ -50,11 +49,11 @@ class BezierInterpolation(
      * DeCasteljau Algorithm
      * Essentially Lerp until theres nothing left to lerp
      */
-    private fun deCasteljau(t: Double, points: ArrayList<Point>): Point {
-        return when (points.size) {
-            2 -> lerp(t, points[0], points[1])
-            else -> deCasteljau(t, ArrayList((0 until points.size - 1).map { i ->
-                lerp(t, points[i], points[i+1])
+    private fun deCasteljau(t: Double, dataPoints: ArrayList<DataPoint>): DataPoint {
+        return when (dataPoints.size) {
+            2 -> lerp(t, dataPoints[0], dataPoints[1])
+            else -> deCasteljau(t, ArrayList((0 until dataPoints.size - 1).map { i ->
+                lerp(t, dataPoints[i], dataPoints[i+1])
             }))
         }
     }
@@ -70,8 +69,8 @@ class BezierInterpolation(
                p2 * (-3*t.pow(3) + 3*t.pow(2)) +
                p3 * (t.pow(3))
     }
-    private fun bernstein(t: Double, p0: DynamicPoint, p1: DynamicPoint, p2: DynamicPoint, p3: DynamicPoint): Point {
-        return Point(
+    private fun bernstein(t: Double, p0: DynamicPoint, p1: DynamicPoint, p2: DynamicPoint, p3: DynamicPoint): DataPoint {
+        return DataPoint(
             bernstein(t, p0.x, p1.x, p2.x, p3.x),
             bernstein(t, p0.y, p1.y, p2.y, p3.y)
         )

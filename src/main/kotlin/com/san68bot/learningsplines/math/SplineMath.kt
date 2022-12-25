@@ -1,6 +1,6 @@
 package com.san68bot.learningsplines.math
 
-import com.san68bot.learningsplines.graphics.point.DynamicPoint
+import com.san68bot.learningsplines.graphics.points.DynamicPoint
 
 object SplineMath {
     /**

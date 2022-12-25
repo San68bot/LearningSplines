@@ -2,7 +2,7 @@ package com.san68bot.learningsplines.splines
 
 import com.san68bot.learningsplines.app.Globals.telemetryManager
 import com.san68bot.learningsplines.graphics.BetterColors
-import com.san68bot.learningsplines.graphics.point.DynamicPoint
+import com.san68bot.learningsplines.graphics.points.DynamicPoint
 import com.san68bot.learningsplines.math.SplineMath.lerp
 import com.san68bot.learningsplines.math.round
 import com.san68bot.learningsplines.math.step

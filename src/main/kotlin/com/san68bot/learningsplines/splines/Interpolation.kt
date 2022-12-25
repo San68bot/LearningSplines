@@ -1,7 +1,7 @@
 package com.san68bot.learningsplines.splines
 
 import com.san68bot.learningsplines.app.Globals
-import com.san68bot.learningsplines.graphics.point.DynamicPoint
+import com.san68bot.learningsplines.graphics.points.DynamicPoint
 import javafx.scene.Group
 import javafx.scene.layout.Pane
 
@@ -13,7 +13,7 @@ abstract class Interpolation(
     var arc_length: Double = 0.0
 
     init {
-        Globals.updateBlock = { refresh() }
+        Globals.addUpdate { refresh() }
         pane.children.addAll(pathGroup)
         pane.children.addAll(points)
     }

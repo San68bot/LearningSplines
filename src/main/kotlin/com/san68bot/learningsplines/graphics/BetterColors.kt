@@ -23,4 +23,7 @@ object BetterColors {
 
     val purple: Color =
         Color.rgb(170, 39, 251)
+
+    val white: Color =
+        Color.rgb(250, 250, 250)
 }

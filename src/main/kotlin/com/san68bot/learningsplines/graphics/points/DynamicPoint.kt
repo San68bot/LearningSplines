@@ -1,7 +1,8 @@
-package com.san68bot.learningsplines.graphics.point
+package com.san68bot.learningsplines.graphics.points
 
 import com.san68bot.learningsplines.app.Globals
 import com.san68bot.learningsplines.app.Globals.telemetryManager
+import com.san68bot.learningsplines.graphics.BetterColors
 import com.san68bot.learningsplines.graphics.SplineGraphics.x_bounds
 import com.san68bot.learningsplines.graphics.SplineGraphics.y_bounds
 import com.san68bot.learningsplines.math.*
@@ -15,14 +16,15 @@ class DynamicPoint(
     private val r: Double,
     private val id: String,
     private val c1: Color,
-    private val c2: Color = c1,
+    private val c2: Color? = BetterColors.white,
     data: Boolean = false,
+    moveable: Boolean = true
 ): Circle(x, y, r), Point by DataPoint(x, y) {
     init {
         if (!data) {
             fill = c1
             telemetryManager.add(id, "$id: ($x, $y)").update()
-            update()
+            if (moveable) update()
         }
     }
 
@@ -31,11 +33,15 @@ class DynamicPoint(
 
     private fun update() {
         setOnMousePressed {
-            fill = c2
+            if (c2 != null) fill = c2
             set(it)
+            Globals.update()
         }
-        setOnMouseDragged { set(it) }
-        setOnMouseReleased { fill = c1 }
+        setOnMouseDragged {
+            set(it)
+            Globals.update()
+        }
+        if (c2 != null) setOnMouseReleased { fill = c1 }
     }
 
     fun set(e: MouseEvent) = set(e.sceneX, e.sceneY)
@@ -49,7 +55,6 @@ class DynamicPoint(
         x += translateX
         y += translateY
 
-        Globals.update()
-        telemetryManager.add(id, "$id: ($x, $y)").update()
+        telemetryManager.add(id, "$id: (${x round 3}, ${y round 3})").update()
     }
 }

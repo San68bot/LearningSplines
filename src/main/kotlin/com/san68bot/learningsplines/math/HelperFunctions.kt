@@ -17,12 +17,13 @@ infix fun Double.round(decimals: Int): Double {
     return kotlin.math.round(this * multiplier) / multiplier
 }
 
+fun Double.toDegrees() = this * 180 / PI
 fun Double.toRadians(): Double = this * PI / 180.0
 
 fun angleWrap(angle: Double): Double {
     var angle0 = angle
-    while (angle < 0) angle0 += 360.0
-    while (angle > 360) angle0 -= 360.0
+    if (angle < 0) angle0 += 360.0
+    if (angle > 360) angle0 -= 360.0
     return angle0
 }
 

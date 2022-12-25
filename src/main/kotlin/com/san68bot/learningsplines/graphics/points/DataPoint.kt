@@ -1,5 +1,6 @@
-package com.san68bot.learningsplines.graphics.point
+package com.san68bot.learningsplines.graphics.points
 
+import com.san68bot.learningsplines.math.toDegrees
 import kotlin.math.*
 
 interface Point {
@@ -29,6 +30,9 @@ interface Point {
 
     infix fun distance(p: Point) =
         sqrt((x - p.x).pow(2) + (y - p.y).pow(2))
+
+    infix fun angle(p: Point) =
+        atan2(p.y - y, p.x - x).toDegrees()
 }
 
 data class DataPoint(

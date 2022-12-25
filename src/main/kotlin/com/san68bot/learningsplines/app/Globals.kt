@@ -8,8 +8,15 @@ object Globals {
         TelemetryManager(SplineGraphics.telemetry, ">>")
 
     var updateBlock: () -> Unit = {}
+    private val updates = arrayListOf<() -> Unit>()
+
+    fun addUpdate(block: () -> Unit) {
+        updates.add(block)
+    }
 
     fun update() {
-        updateBlock.invoke()
+        updates.forEach {
+            it.invoke()
+        }
     }
 }

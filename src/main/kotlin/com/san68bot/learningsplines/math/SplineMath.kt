@@ -1,6 +1,6 @@
 package com.san68bot.learningsplines.math
 
-import com.san68bot.learningsplines.graphics.point.DataPoint
+import com.san68bot.learningsplines.graphics.point.DynamicPoint
 
 object SplineMath {
     /**
@@ -8,5 +8,5 @@ object SplineMath {
      */
     fun lerp(t: Double, start: Double, end: Double) = (1.0 - t) * start + t * end
 
-    fun lerp(t: Double, start: DataPoint, end: DataPoint) = DataPoint(lerp(t, start.x, end.x), lerp(t, start.y, end.y))
+    fun lerp(t: Double, start: DynamicPoint, end: DynamicPoint) = DynamicPoint(lerp(t, start.x, end.x), lerp(t, start.y, end.y))
 }

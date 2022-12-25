@@ -3,7 +3,6 @@ package com.san68bot.learningsplines.splines
 import com.san68bot.learningsplines.app.Globals.telemetryManager
 import com.san68bot.learningsplines.graphics.BetterColors
 import com.san68bot.learningsplines.graphics.point.DynamicPoint
-import com.san68bot.learningsplines.graphics.point.DataPoint
 import com.san68bot.learningsplines.math.SplineMath.lerp
 import com.san68bot.learningsplines.math.round
 import com.san68bot.learningsplines.math.step
@@ -31,11 +30,11 @@ class Bezier(
     }
 
     override fun refresh() {
-        var prev_eval = points[0].dataPoint()
+        var prev_eval = points[0]
         super.refresh()
         (0.0..1.0 step 0.01).forEach { t ->
             val eval = when(calculationMethod) {
-                CalculationMethod.deCasteljau -> deCasteljau(t, ArrayList(points.map { DataPoint(it.x, it.y) }))
+                CalculationMethod.deCasteljau -> deCasteljau(t, points)
                 CalculationMethod.bernstein -> bernstein(t, points[0], points[1], points[2], points[3])
             }
             pathGroup.children.add(Circle(eval.x, eval.y, 1.5).apply { fill = BetterColors.purple })
@@ -49,7 +48,7 @@ class Bezier(
      * DeCasteljau Algorithm
      * Essentially Lerp until theres nothing left to lerp
      */
-    private fun deCasteljau(t: Double, dataPoints: ArrayList<DataPoint>): DataPoint {
+    private fun deCasteljau(t: Double, dataPoints: ArrayList<DynamicPoint>): DynamicPoint {
         return when (dataPoints.size) {
             2 -> lerp(t, dataPoints[0], dataPoints[1])
             else -> deCasteljau(t, ArrayList((0 until dataPoints.size - 1).map { i ->
@@ -69,8 +68,8 @@ class Bezier(
                p2 * (-3*t.pow(3) + 3*t.pow(2)) +
                p3 * (t.pow(3))
     }
-    private fun bernstein(t: Double, p0: DynamicPoint, p1: DynamicPoint, p2: DynamicPoint, p3: DynamicPoint): DataPoint {
-        return DataPoint(
+    private fun bernstein(t: Double, p0: DynamicPoint, p1: DynamicPoint, p2: DynamicPoint, p3: DynamicPoint): DynamicPoint {
+        return DynamicPoint(
             bernstein(t, p0.x, p1.x, p2.x, p3.x),
             bernstein(t, p0.y, p1.y, p2.y, p3.y)
         )

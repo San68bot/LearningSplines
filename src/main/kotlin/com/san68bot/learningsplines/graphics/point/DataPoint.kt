@@ -2,17 +2,20 @@ package com.san68bot.learningsplines.graphics.point
 
 import kotlin.math.*
 
-data class DataPoint(var x: Double, var y: Double) {
-    operator fun plus(p: DataPoint) =
+interface Point {
+    val x: Double
+    val y: Double
+
+    operator fun plus(p: Point) =
         DataPoint(x + p.x, y + p.y)
 
-    operator fun minus(p: DataPoint) =
+    operator fun minus(p: Point) =
         DataPoint(x - p.x, y - p.y)
 
-    operator fun times(p: DataPoint) =
+    operator fun times(p: Point) =
         DataPoint(x * p.x, y * p.y)
 
-    operator fun div(p: DataPoint) =
+    operator fun div(p: Point) =
         DataPoint(x / p.x, y / p.y)
 
     operator fun times(s: Double) =
@@ -24,8 +27,11 @@ data class DataPoint(var x: Double, var y: Double) {
     operator fun unaryMinus() =
         DataPoint(-x, -y)
 
-    infix fun distance(p: DataPoint) =
+    infix fun distance(p: Point) =
         sqrt((x - p.x).pow(2) + (y - p.y).pow(2))
-
-    override fun toString(): String = "($x, $y)"
 }
+
+data class DataPoint(
+    override var x: Double,
+    override var y: Double
+): Point

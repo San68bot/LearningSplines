@@ -10,29 +10,32 @@ import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 
 class DynamicPoint(
-    var x: Double,
-    var y: Double,
+    override var x: Double,
+    override var y: Double,
     private val r: Double,
     private val id: String,
-    private val color1: Color,
-    private val color2: Color = color1,
-): Circle(x, y, r) {
+    private val c1: Color,
+    private val c2: Color = c1,
+    data: Boolean = false,
+): Circle(x, y, r), Point by DataPoint(x, y) {
     init {
-        fill = color1
-        telemetryManager.add(id, "$id: ($x, $y)").update()
-        update()
+        if (!data) {
+            fill = c1
+            telemetryManager.add(id, "$id: ($x, $y)").update()
+            update()
+        }
     }
 
-    private fun setColor1() { fill = color1 }
-    private fun setColor2() { fill = color2 }
+    constructor(x: Double, y: Double):
+            this(x, y, Double.NaN, "", Color.BLACK, data = true)
 
     private fun update() {
         setOnMousePressed {
-            setColor2()
+            fill = c2
             set(it)
         }
         setOnMouseDragged { set(it) }
-        setOnMouseReleased { setColor1() }
+        setOnMouseReleased { fill = c1 }
     }
 
     fun set(e: MouseEvent) = set(e.sceneX, e.sceneY)
@@ -49,6 +52,4 @@ class DynamicPoint(
         Globals.update()
         telemetryManager.add(id, "$id: ($x, $y)").update()
     }
-
-    fun dataPoint() = DataPoint(x, y)
 }

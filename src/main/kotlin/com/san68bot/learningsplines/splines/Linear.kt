@@ -3,6 +3,7 @@ package com.san68bot.learningsplines.splines
 import com.san68bot.learningsplines.app.Globals.telemetryManager
 import com.san68bot.learningsplines.graphics.*
 import com.san68bot.learningsplines.graphics.points.DynamicPoint
+import com.san68bot.learningsplines.graphics.points.Point
 import com.san68bot.learningsplines.math.*
 import com.san68bot.learningsplines.math.SplineMath.lerp
 import javafx.scene.layout.Pane
@@ -11,7 +12,7 @@ import kotlin.math.*
 
 class Linear(
     pane: Pane,
-    private val points: ArrayList<DynamicPoint>
+    private val points: ArrayList<Point>
 ): Interpolation(pane, points) {
     init {
         refresh()

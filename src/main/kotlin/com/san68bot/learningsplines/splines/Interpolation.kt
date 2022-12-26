@@ -2,12 +2,13 @@ package com.san68bot.learningsplines.splines
 
 import com.san68bot.learningsplines.app.Globals
 import com.san68bot.learningsplines.graphics.points.DynamicPoint
+import com.san68bot.learningsplines.graphics.points.Point
 import javafx.scene.Group
 import javafx.scene.layout.Pane
 
 abstract class Interpolation(
     pane: Pane,
-    points: ArrayList<DynamicPoint>,
+    points: ArrayList<Point>,
     val pathGroup: Group = Group()
 ) {
     var arc_length: Double = 0.0
@@ -15,7 +16,11 @@ abstract class Interpolation(
     init {
         Globals.addUpdate { refresh() }
         pane.children.addAll(pathGroup)
-        pane.children.addAll(points)
+        points.forEach { point ->
+            point.graphics.forEach { shape ->
+                if (shape != null) pane.children.add(shape)
+            }
+        }
     }
 
     open fun refresh() {

@@ -1,9 +1,11 @@
 package com.san68bot.learningsplines.app
 
 import com.san68bot.learningsplines.graphics.*
-import com.san68bot.learningsplines.graphics.points.DataPoint
+import com.san68bot.learningsplines.graphics.points.ControlPoint
 import com.san68bot.learningsplines.graphics.points.DynamicPoint
+import com.san68bot.learningsplines.graphics.points.Point
 import com.san68bot.learningsplines.splines.Bezier
+import com.san68bot.learningsplines.splines.Linear
 import javafx.application.Application
 import javafx.application.Application.launch
 import javafx.scene.Scene
@@ -23,12 +25,35 @@ class Splines : Application() {
     }
 
     private fun splines() {
-        Bezier(mainPane, arrayListOf(
-            DynamicPoint(300.0, 500.0, 8.0, "Point 1", BetterColors.light_blue),
-            DynamicPoint(350.0, 300.0, 8.0, "Point 2", BetterColors.light_blue),
-            DynamicPoint(500.0, 300.0, 8.0, "Point 3", BetterColors.light_blue),
-            DynamicPoint(550.0, 500.0, 8.0, "Point 4", BetterColors.light_blue)
-        ), Bezier.CalculationMethod.bernstein)
+        Linear(mainPane, arrayListOf(
+            ControlPoint(
+                Point(150.0, 550.0),
+                ControlPoint.ControlData(50.0, 30.0),
+                null,
+                "c0", BetterColors.red
+            ),
+
+            ControlPoint(
+                Point(350.0, 550.0),
+                ControlPoint.ControlData(50.0, 150.0),
+                ControlPoint.ControlData(50.0, 330.0),
+                "c1", BetterColors.light_blue
+            ),
+
+            ControlPoint(
+                Point(550.0, 550.0),
+                ControlPoint.ControlData(50.0, 210.0),
+                ControlPoint.ControlData(50.0, 30.0),
+                "c2", BetterColors.green
+            ),
+
+            ControlPoint(
+                Point(750.0, 550.0),
+                ControlPoint.ControlData(50.0, 150.0),
+                null,
+                "c3", BetterColors.yellow
+            )
+        ))
     }
 
     companion object {

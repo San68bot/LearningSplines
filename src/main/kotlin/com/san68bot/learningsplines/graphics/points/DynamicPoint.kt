@@ -9,31 +9,28 @@ import com.san68bot.learningsplines.math.*
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
+import javafx.scene.shape.Line
+import javafx.scene.shape.Shape
 
 class DynamicPoint(
     override var x: Double,
     override var y: Double,
-    private val r: Double,
+    r: Double,
     private val id: String,
-    private val c1: Color,
-    private val c2: Color? = BetterColors.white,
-    data: Boolean = false,
-    moveable: Boolean = true
-): Circle(x, y, r), Point by DataPoint(x, y) {
+    private val color: Color,
+    data: Boolean = false
+): Point(x, y, r) {
     init {
         if (!data) {
-            fill = c1
+            fill = color
             telemetryManager.add(id, "$id: ($x, $y)").update()
-            if (moveable) update()
+            update()
         }
     }
 
-    constructor(x: Double, y: Double):
-            this(x, y, Double.NaN, "", Color.BLACK, data = true)
-
     private fun update() {
         setOnMousePressed {
-            if (c2 != null) fill = c2
+            fill = BetterColors.white
             set(it)
             Globals.update()
         }
@@ -41,20 +38,26 @@ class DynamicPoint(
             set(it)
             Globals.update()
         }
-        if (c2 != null) setOnMouseReleased { fill = c1 }
+        setOnMouseReleased {
+            fill = color
+            set(it)
+            Globals.update()
+        }
     }
 
-    fun set(e: MouseEvent) = set(e.sceneX, e.sceneY)
+    private fun set(e: MouseEvent) = set(e.sceneX, e.sceneY)
     fun set(x_new: Double, y_new: Double) {
         centerX = x
         centerY = y
 
-        translateX = clamp(x_new, x_bounds.first + r, x_bounds.second - r) - centerX
-        translateY = clamp(y_new, y_bounds.first + r, y_bounds.second - r) - centerY
+        translateX = clamp(x_new, x_bounds.first + radius, x_bounds.second - radius) - centerX
+        translateY = clamp(y_new, y_bounds.first + radius, y_bounds.second - radius) - centerY
 
         x += translateX
         y += translateY
 
         telemetryManager.add(id, "$id: (${x round 3}, ${y round 3})").update()
     }
+
+    override var graphics: List<Shape?> = listOf(this)
 }

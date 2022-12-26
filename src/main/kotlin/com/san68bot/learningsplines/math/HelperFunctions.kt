@@ -1,5 +1,6 @@
 package com.san68bot.learningsplines.math
 
+import com.san68bot.learningsplines.graphics.points.Point
 import kotlin.math.*
 
 infix fun ClosedRange<Double>.step(step: Double): Iterable<Double> {
@@ -25,6 +26,11 @@ fun angleWrap(angle: Double): Double {
     if (angle < 0) angle0 += 360.0
     if (angle > 360) angle0 -= 360.0
     return angle0
+}
+
+fun unitCircleArctan(point1: Point, point2: Point): Double {
+    val angle = atan2(point2.y - point1.y, point2.x - point1.x)
+    return (angle + PI).toDegrees()
 }
 
 fun clamp(value: Double, min: Double, max: Double): Double = min(max(value, min), max)

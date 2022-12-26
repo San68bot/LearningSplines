@@ -21,19 +21,20 @@ class ControlPoint(
     tangent1: ControlData,
     tangent2: ControlData,
     private val id: String,
-    private val color: Color
+    val color: Color
 ): Point(origin.x, origin.y) {
 
     constructor(origin: Point, tangent1: ControlData, id: String, color: Color):
             this(origin, tangent1, ControlData(Double.NaN, Double.NaN), id, color)
 
-    val t0 = ControlVector(tangent1)
-    val t1 = ControlVector(tangent2)
+    val t1 = ControlVector(tangent1)
+    val t2 = ControlVector(tangent2)
+    val t2Active get() = (!t2.cd.magnitude.isNaN() && !t2.cd.magnitude.isNaN())
 
     data class ControlData(var magnitude: Double, var angle: Double)
     inner class ControlVector(val cd: ControlData): Point(
         this@ControlPoint.x + cd.magnitude * cos(cd.angle.toRadians()),
-        this@ControlPoint.y + cd.magnitude * sin(cd.angle.toRadians())
+        this@ControlPoint.y - cd.magnitude * sin(cd.angle.toRadians())
     ) {
         private val cx get() = this@ControlPoint.x
         private val cy get() = this@ControlPoint.y
@@ -48,9 +49,14 @@ class ControlPoint(
             centerY = y
             line.apply {
                 stroke = color
-                strokeWidth = 5.0
+                strokeWidth = 4.0
             }
             construct()
+        }
+
+        fun setColor(color: Color) {
+            stroke = color
+            line.stroke = color
         }
 
         private fun construct() {
@@ -72,7 +78,7 @@ class ControlPoint(
 
         fun linkedMove() {
             x = cx + cd.magnitude * cos(cd.angle.toRadians())
-            y = cy + cd.magnitude * sin(cd.angle.toRadians())
+            y = cy - cd.magnitude * sin(cd.angle.toRadians())
 
             centerX = x
             centerY = y
@@ -144,8 +150,8 @@ class ControlPoint(
         x += translateX
         y += translateY
 
-        t0.linkedMove()
         t1.linkedMove()
+        t2.linkedMove()
 
         telemetry()
     }
@@ -153,10 +159,10 @@ class ControlPoint(
     fun telemetry() {
         telemetryManager
             .add(id, "$id: (${x round 3}, ${y round 3})")
-            .add("$id t1", "$id t1: ${t0.cd.magnitude round 3}, ${t0.cd.angle round 3}°")
-            .add("$id t2", "$id t2: ${t1.cd.magnitude round 3}, ${t1.cd.angle round 3}°\n")
+            .add("$id t1", "$id t1: ${t1.cd.magnitude round 3}, ${t1.cd.angle round 3}°")
+            .add("$id t2", "$id t2: ${t2.cd.magnitude round 3}, ${t2.cd.angle round 3}°\n")
             .update()
     }
 
-    override var graphics: List<Shape?> = listOf(t0.line, t1.line, this, t0, t1)
+    override var graphics: List<Shape?> = listOf(t1.line, t2.line, this, t1, t2)
 }

@@ -1,7 +1,9 @@
 package com.san68bot.learningsplines.graphics.points
 
+import com.san68bot.learningsplines.math.angleWrap
 import com.san68bot.learningsplines.math.round
 import com.san68bot.learningsplines.math.toDegrees
+import com.san68bot.learningsplines.math.unitCircleArctan
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Line
 import javafx.scene.shape.Shape
@@ -38,7 +40,7 @@ open class Point(
         sqrt((x - p.x).pow(2) + (y - p.y).pow(2))
 
     infix fun angle(p: Point) =
-        atan2(p.y - y, p.x - x).toDegrees()
+        angleWrap(180.0 - unitCircleArctan(this, p))
 
     override fun toString() = "(${x round 3}, ${y round 3})"
 

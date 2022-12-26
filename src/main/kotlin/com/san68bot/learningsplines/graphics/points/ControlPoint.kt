@@ -5,6 +5,7 @@ import com.san68bot.learningsplines.app.Globals.telemetryManager
 import com.san68bot.learningsplines.graphics.BetterColors
 import com.san68bot.learningsplines.graphics.SplineGraphics.x_bounds
 import com.san68bot.learningsplines.graphics.SplineGraphics.y_bounds
+import com.san68bot.learningsplines.math.angleWrap
 import com.san68bot.learningsplines.math.clamp
 import com.san68bot.learningsplines.math.round
 import com.san68bot.learningsplines.math.toRadians
@@ -18,26 +19,33 @@ import kotlin.math.*
 class ControlPoint(
     origin: Point,
     tangent1: ControlData,
-    tangent2: ControlData?,
+    tangent2: ControlData,
     private val id: String,
     private val color: Color
 ): Point(origin.x, origin.y) {
+
+    constructor(origin: Point, tangent1: ControlData, id: String, color: Color):
+            this(origin, tangent1, ControlData(Double.NaN, Double.NaN), id, color)
+
     val t0 = ControlVector(tangent1)
-    val t1 = if (tangent2 == null) null else ControlVector(tangent2)
+    val t1 = ControlVector(tangent2)
 
     data class ControlData(var magnitude: Double, var angle: Double)
-    inner class ControlVector(val cd: ControlData): Circle() {
-        var vx = x + cd.magnitude * cos(cd.angle.toRadians())
-        var vy = y + cd.magnitude * sin(cd.angle.toRadians())
-        val line = Line(x, y, vx, vy)
+    inner class ControlVector(val cd: ControlData): Point(
+        this@ControlPoint.x + cd.magnitude * cos(cd.angle.toRadians()),
+        this@ControlPoint.y + cd.magnitude * sin(cd.angle.toRadians())
+    ) {
+        private val cx get() = this@ControlPoint.x
+        private val cy get() = this@ControlPoint.y
+        val line = Line(cx, cy, x, y)
 
         init {
             radius = 5.0
             fill = Color.rgb(30, 32, 41)
             stroke = color
             strokeWidth = 2.0
-            centerX = vx
-            centerY = vy
+            centerX = x
+            centerY = y
             line.apply {
                 stroke = color
                 strokeWidth = 5.0
@@ -63,47 +71,48 @@ class ControlPoint(
         }
 
         fun linkedMove() {
-            vx = x + cd.magnitude * cos(cd.angle.toRadians())
-            vy = y + cd.magnitude * sin(cd.angle.toRadians())
+            x = cx + cd.magnitude * cos(cd.angle.toRadians())
+            y = cy + cd.magnitude * sin(cd.angle.toRadians())
 
-            centerX = vx
-            centerY = vy
+            centerX = x
+            centerY = y
 
             line.apply {
-                startX = x
-                startY = y
-                endX = vx
-                endY = vy
+                startX = cx
+                startY = cy
+                endX = x
+                endY = y
             }
         }
 
         private fun set(e: MouseEvent) = set(e.sceneX, e.sceneY)
         fun set(x_new: Double, y_new: Double) {
-            centerX = vx
-            centerY = vy
+            centerX = x
+            centerY = y
 
             translateX = (clamp(x_new, x_bounds.first + radius, x_bounds.second - radius) - centerX)
             translateY = (clamp(y_new, y_bounds.first + radius, y_bounds.second - radius) - centerY)
 
             line.apply {
-                startX = x
-                startY = y
-                endX = vx
-                endY = vy
+                startX = cx
+                startY = cy
+                endX = x
+                endY = y
             }
 
-            vx += translateX
-            vy += translateY
+            x += translateX
+            y += translateY
 
-            cd.magnitude = this@ControlPoint distance Point(vx, vy)
-            cd.angle = this@ControlPoint angle Point(vx, vy)
+            cd.magnitude = this@ControlPoint distance this
+            cd.angle = this@ControlPoint angle this
+            telemetry()
         }
     }
 
     init {
         fill = color
         radius = 8.0
-        telemetryManager.add(id, "$id: ($x, $y)").update()
+        telemetry()
         update()
     }
 
@@ -136,10 +145,18 @@ class ControlPoint(
         y += translateY
 
         t0.linkedMove()
-        t1?.linkedMove()
+        t1.linkedMove()
 
-        telemetryManager.add(id, "$id: (${x round 3}, ${y round 3})").update()
+        telemetry()
     }
 
-    override var graphics: List<Shape?> = listOf(t0.line, t1?.line, this, t0, t1)
+    fun telemetry() {
+        telemetryManager
+            .add(id, "$id: (${x round 3}, ${y round 3})")
+            .add("$id t1", "$id t1: ${t0.cd.magnitude round 3}, ${t0.cd.angle round 3}°")
+            .add("$id t2", "$id t2: ${t1.cd.magnitude round 3}, ${t1.cd.angle round 3}°\n")
+            .update()
+    }
+
+    override var graphics: List<Shape?> = listOf(t0.line, t1.line, this, t0, t1)
 }

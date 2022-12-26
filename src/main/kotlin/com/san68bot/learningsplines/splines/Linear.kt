@@ -27,10 +27,12 @@ class Linear(
     override fun refresh() {
         super.refresh()
         (0 until points.size - 1).forEach { i ->
-            LinearEvaluation(points[i].x, points[i].y, points[i+1].x, points[i+1].y).apply {
-                arc_length += distance
-                (0.0..1.0 step 0.01).forEach { t ->
-                    pathGroup.children.add(Circle(x(t), y(t), 1.5).apply { fill = BetterColors.purple })
+            if (!points[i].x.isNaN() && !points[i].y.isNaN()) {
+                LinearEvaluation(points[i].x, points[i].y, points[i + 1].x, points[i + 1].y).apply {
+                    arc_length += distance
+                    (0.0..1.0 step 0.01).forEach { t ->
+                        pathGroup.children.add(Circle(x(t), y(t), 1.5).apply { fill = BetterColors.purple })
+                    }
                 }
             }
         }

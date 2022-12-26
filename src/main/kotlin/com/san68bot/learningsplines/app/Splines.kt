@@ -25,34 +25,37 @@ class Splines : Application() {
     }
 
     private fun splines() {
+        val c0 = ControlPoint(
+            Point(150.0, 550.0),
+            ControlPoint.ControlData(50.0, 30.0),
+            "c0", BetterColors.red
+        )
+
+        val c1 = ControlPoint(
+            Point(350.0, 550.0),
+            ControlPoint.ControlData(50.0, 150.0),
+            ControlPoint.ControlData(50.0, 330.0),
+            "c1", BetterColors.light_blue
+        )
+
+        val c2 = ControlPoint(
+            Point(550.0, 550.0),
+            ControlPoint.ControlData(50.0, 210.0),
+            ControlPoint.ControlData(50.0, 30.0),
+            "c2", BetterColors.green
+        )
+
+        val c3 = ControlPoint(
+            Point(750.0, 550.0),
+            ControlPoint.ControlData(50.0, 150.0),
+            "c3", BetterColors.yellow
+        )
+
         Linear(mainPane, arrayListOf(
-            ControlPoint(
-                Point(150.0, 550.0),
-                ControlPoint.ControlData(50.0, 30.0),
-                null,
-                "c0", BetterColors.red
-            ),
-
-            ControlPoint(
-                Point(350.0, 550.0),
-                ControlPoint.ControlData(50.0, 150.0),
-                ControlPoint.ControlData(50.0, 330.0),
-                "c1", BetterColors.light_blue
-            ),
-
-            ControlPoint(
-                Point(550.0, 550.0),
-                ControlPoint.ControlData(50.0, 210.0),
-                ControlPoint.ControlData(50.0, 30.0),
-                "c2", BetterColors.green
-            ),
-
-            ControlPoint(
-                Point(750.0, 550.0),
-                ControlPoint.ControlData(50.0, 150.0),
-                null,
-                "c3", BetterColors.yellow
-            )
+            c0, c0.t0,
+            c1.t0, c1, c1.t1,
+            c2.t0, c2, c2.t1,
+            c3.t0, c3
         ))
     }
 

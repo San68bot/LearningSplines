@@ -30,9 +30,8 @@ class ControlPoint(
     val t2 = ControlVector(tangent2)
     val t2Active get() = (!t2.magnitude.isNaN() && !t2.magnitude.isNaN())
 
-    private fun otherTangent(tangent: ControlVector): ControlVector {
-        return if (tangent == t1) t2 else t1
-    }
+    private fun otherTangent(tangent: ControlVector): ControlVector =
+        if (tangent == t1) t2 else t1
 
     enum class Movement {
         Free, Aligned, Mirrored;
@@ -40,7 +39,11 @@ class ControlPoint(
         fun isAligned() = (this == Aligned)
         fun isMirrored() = (this == Mirrored)
     }
-    data class ControlData(val magnitude: Double, val angle: Double, val movement: Movement = Movement.Free)
+    data class ControlData(
+        val magnitude: Double,
+        val angle: Double,
+        val movement: Movement = Movement.Free
+    )
     inner class ControlVector(cd: ControlData): Point(
         this@ControlPoint.x + cd.magnitude * cos(cd.angle.toRadians()),
         this@ControlPoint.y - cd.magnitude * sin(cd.angle.toRadians())
@@ -94,13 +97,13 @@ class ControlPoint(
             translateX = (clamp(x_new, x_bounds.first + radius, x_bounds.second - radius) - centerX)
             translateY = (clamp(y_new, y_bounds.first + radius, y_bounds.second - radius) - centerY)
 
-            updateLine()
-
             x += translateX
             y += translateY
 
             magnitude = this@ControlPoint distance this
             angle = this@ControlPoint angle this
+
+            updateLine()
 
             telemetry()
             Globals.update()
@@ -115,9 +118,6 @@ class ControlPoint(
             if (movement.isAligned() || otherTangent.movement.isAligned()) {
                 otherTangent.angle(angleWrap(angle + 180.0))
             }
-
-            updateLine()
-            otherTangent.updateLine()
         }
         
         private fun updateLine() {

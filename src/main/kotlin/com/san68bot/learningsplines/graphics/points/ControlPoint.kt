@@ -23,7 +23,6 @@ class ControlPoint(
     private val id: String,
     val color: Color
 ): Point(origin.x, origin.y) {
-
     constructor(origin: Point, tangent1: ControlData, id: String, color: Color):
             this(origin, tangent1, ControlData(Double.NaN, Double.NaN, Movement.Free), id, color)
 
@@ -36,8 +35,9 @@ class ControlPoint(
     }
 
     enum class Movement {
-        Free, Mirrored;
+        Free, Aligned, Mirrored;
         fun isFree() = (this == Free)
+        fun isAligned() = (this == Aligned)
         fun isMirrored() = (this == Mirrored)
     }
     data class ControlData(var magnitude: Double, var angle: Double, val movement: Movement = Movement.Free)
@@ -60,35 +60,35 @@ class ControlPoint(
                 stroke = color
                 strokeWidth = 4.0
             }
-            if (cd.movement.isFree()) construct()
+            construct()
         }
 
         private fun construct() {
             setOnMousePressed {
                 stroke = BetterColors.white
-                set(it)
+                onMouseEvent(it)
             }
             setOnMouseDragged {
-                set(it)
+                onMouseEvent(it)
             }
             setOnMouseReleased {
                 stroke = color
-                set(it)
+                onMouseEvent(it)
             }
         }
 
-        fun linkedMove() {
-            x = cx + cd.magnitude * cos(cd.angle.toRadians())
-            y = cy - cd.magnitude * sin(cd.angle.toRadians())
+        private fun onMouseEvent(me: MouseEvent) {
+            set(me)
+            conditionalMovement()
+        }
 
-            centerX = x
-            centerY = y
-
-            line.apply {
-                startX = cx
-                startY = cy
-                endX = x
-                endY = y
+        private fun conditionalMovement() {
+            if (cd.movement.isMirrored() || otherTangent(this).cd.movement.isMirrored()) {
+                otherTangent(this).setAngle(angleWrap(cd.angle + 180.0))
+                otherTangent(this).setMagnitude(cd.magnitude)
+            }
+            if (cd.movement.isAligned() || otherTangent(this).cd.movement.isAligned()) {
+                otherTangent(this).setAngle(angleWrap(cd.angle + 180.0))
             }
         }
 
@@ -103,8 +103,8 @@ class ControlPoint(
             line.apply {
                 startX = cx
                 startY = cy
-                endX = x
-                endY = y
+                endX = centerX
+                endY = centerY
             }
 
             x += translateX
@@ -112,10 +112,7 @@ class ControlPoint(
 
             cd.magnitude = this@ControlPoint distance this
             cd.angle = this@ControlPoint angle this
-            if (otherTangent(this).cd.movement.isMirrored()) {
-                otherTangent(this).setAngle(angleWrap(cd.angle - 180.0))
-                otherTangent(this).setMagnitude(cd.magnitude)
-            }
+
             telemetry()
             Globals.update()
         }
@@ -131,6 +128,13 @@ class ControlPoint(
             set(
                 cx + m0 * cos(cd.angle.toRadians()),
                 cy - m0 * sin(cd.angle.toRadians())
+            )
+        }
+
+        fun linkedMove() {
+            set(
+                cx + cd.magnitude * cos(cd.angle.toRadians()),
+                cy - cd.magnitude * sin(cd.angle.toRadians())
             )
         }
     }

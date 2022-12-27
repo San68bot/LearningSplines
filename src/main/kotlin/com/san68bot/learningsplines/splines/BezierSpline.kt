@@ -10,11 +10,6 @@ import javafx.scene.layout.Pane
 import javafx.scene.shape.Circle
 import kotlin.math.pow
 
-/**
- * No local control
- * Doesn't pass through most points
- * Expensive to calculate
- */
 class BezierSpline(
     pane: Pane,
     private val points: ArrayList<Point>,

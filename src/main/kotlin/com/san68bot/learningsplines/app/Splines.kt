@@ -52,13 +52,6 @@ class Splines : Application() {
             "c3", BetterColors.yellow
         )
 
-        /*Linear(mainPane, arrayListOf(
-            c0, c0.t1,
-            c1.t1, c1, c1.t2,
-            c2.t1, c2, c2.t2,
-            c3.t1, c3
-        ))*/
-
         BezierSpline(
             mainPane, arrayListOf(
                 c0, c1, c2, c3

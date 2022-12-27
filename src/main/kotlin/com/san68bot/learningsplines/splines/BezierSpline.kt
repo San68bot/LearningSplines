@@ -32,8 +32,7 @@ class BezierSpline(
             (0.0..1.0 step 0.01).forEach { t ->
                 val start = if (cp_list[i].t2Active) cp_list[i].t2 else cp_list[i].t1
                 val eval = bernstein(t, cp_list[i], start, cp_list[i+1].t1, cp_list[i+1])
-                cp_list[i+1].t1.setColor(cp_list[i].color)
-                pathGroup.children.add(Circle(eval.x, eval.y, 1.5).apply { fill = cp_list[i].color })
+                pathGroup.children.add(Circle(eval.x, eval.y, 1.5).apply { fill = BetterColors.gradient(cp_list[i].color, cp_list[i+1].color, t) })
                 arc_length += eval distance prev_eval
                 prev_eval = eval
             }

@@ -32,16 +32,13 @@ class DynamicPoint(
         setOnMousePressed {
             fill = BetterColors.white
             set(it)
-            Globals.update()
         }
         setOnMouseDragged {
             set(it)
-            Globals.update()
         }
         setOnMouseReleased {
             fill = color
             set(it)
-            Globals.update()
         }
     }
 
@@ -57,6 +54,7 @@ class DynamicPoint(
         y += translateY
 
         telemetryManager.add(id, "$id: (${x round 3}, ${y round 3})").update()
+        Globals.update()
     }
 
     override var graphics: List<Shape?> = listOf(this)

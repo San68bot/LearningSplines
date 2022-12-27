@@ -67,16 +67,13 @@ class ControlPoint(
             setOnMousePressed {
                 stroke = BetterColors.white
                 set(it)
-                Globals.update()
             }
             setOnMouseDragged {
                 set(it)
-                Globals.update()
             }
             setOnMouseReleased {
                 stroke = color
                 set(it)
-                Globals.update()
             }
         }
 
@@ -120,6 +117,7 @@ class ControlPoint(
                 otherTangent(this).setMagnitude(cd.magnitude)
             }
             telemetry()
+            Globals.update()
         }
 
         fun setAngle(a0: Double) {
@@ -148,16 +146,13 @@ class ControlPoint(
         setOnMousePressed {
             fill = BetterColors.white
             set(it)
-            Globals.update()
         }
         setOnMouseDragged {
             set(it)
-            Globals.update()
         }
         setOnMouseReleased {
             fill = color
             set(it)
-            Globals.update()
         }
     }
 
@@ -176,6 +171,7 @@ class ControlPoint(
         t2.linkedMove()
 
         telemetry()
+        Globals.update()
     }
 
     fun telemetry() {

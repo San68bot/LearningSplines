@@ -28,7 +28,7 @@ class BezierSpline(
         super.refresh()
         val cp_list = points.map { it as ControlPoint }
         (0 until cp_list.size - 1).forEach { i ->
-            (0.0..1.0 step 0.01).forEach { t ->
+            (0.0..1.0 step 0.005).forEach { t ->
                 val start = if (cp_list[i].t2Active) cp_list[i].t2 else cp_list[i].t1
                 val eval = Bezier.bernstein(t, cp_list[i], start, cp_list[i+1].t1, cp_list[i+1])
                 pathGroup.children.add(Circle(eval.x, eval.y, 1.5).apply { fill = BetterColors.gradient(cp_list[i].color, cp_list[i+1].color, t) })

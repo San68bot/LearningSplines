@@ -28,7 +28,7 @@ class ControlPoint(
 
     val t1 = ControlVector(tangent1)
     val t2 = ControlVector(tangent2)
-    val t2Active get() = (!t2.cd.magnitude.isNaN() && !t2.cd.magnitude.isNaN())
+    val t2Active get() = (!t2.magnitude.isNaN() && !t2.magnitude.isNaN())
 
     private fun otherTangent(tangent: ControlVector): ControlVector {
         return if (tangent == t1) t2 else t1
@@ -40,14 +40,18 @@ class ControlPoint(
         fun isAligned() = (this == Aligned)
         fun isMirrored() = (this == Mirrored)
     }
-    data class ControlData(var magnitude: Double, var angle: Double, val movement: Movement = Movement.Free)
-    inner class ControlVector(val cd: ControlData): Point(
+    data class ControlData(val magnitude: Double, val angle: Double, val movement: Movement = Movement.Free)
+    inner class ControlVector(cd: ControlData): Point(
         this@ControlPoint.x + cd.magnitude * cos(cd.angle.toRadians()),
         this@ControlPoint.y - cd.magnitude * sin(cd.angle.toRadians())
     ) {
         private val cx get() = this@ControlPoint.x
         private val cy get() = this@ControlPoint.y
         val line = Line(cx, cy, x, y)
+
+        var magnitude = cd.magnitude
+        var angle = cd.angle
+        private val movement = cd.movement
 
         init {
             radius = 5.0
@@ -82,16 +86,6 @@ class ControlPoint(
             conditionalMovement()
         }
 
-        private fun conditionalMovement() {
-            if (cd.movement.isMirrored() || otherTangent(this).cd.movement.isMirrored()) {
-                otherTangent(this).setAngle(angleWrap(cd.angle + 180.0))
-                otherTangent(this).setMagnitude(cd.magnitude)
-            }
-            if (cd.movement.isAligned() || otherTangent(this).cd.movement.isAligned()) {
-                otherTangent(this).setAngle(angleWrap(cd.angle + 180.0))
-            }
-        }
-
         private fun set(e: MouseEvent) = set(e.sceneX, e.sceneY)
         fun set(x_new: Double, y_new: Double) {
             centerX = x
@@ -100,41 +94,59 @@ class ControlPoint(
             translateX = (clamp(x_new, x_bounds.first + radius, x_bounds.second - radius) - centerX)
             translateY = (clamp(y_new, y_bounds.first + radius, y_bounds.second - radius) - centerY)
 
-            line.apply {
-                startX = cx
-                startY = cy
-                endX = centerX
-                endY = centerY
-            }
+            updateLine()
 
             x += translateX
             y += translateY
 
-            cd.magnitude = this@ControlPoint distance this
-            cd.angle = this@ControlPoint angle this
+            magnitude = this@ControlPoint distance this
+            angle = this@ControlPoint angle this
 
             telemetry()
             Globals.update()
         }
 
-        fun setAngle(a0: Double) {
+        private fun conditionalMovement() {
+            val otherTangent = otherTangent(this)
+            if (movement.isMirrored() || otherTangent.movement.isMirrored()) {
+                otherTangent.angle(angleWrap(angle + 180.0))
+                otherTangent.magnitude(magnitude)
+            }
+            if (movement.isAligned() || otherTangent.movement.isAligned()) {
+                otherTangent.angle(angleWrap(angle + 180.0))
+            }
+
+            updateLine()
+            otherTangent.updateLine()
+        }
+        
+        private fun updateLine() {
+            line.apply {
+                startX = cx
+                startY = cy
+                endX = x
+                endY = y
+            }
+        }
+
+        fun angle(a0: Double) {
             set(
-                cx + cd.magnitude * cos(a0.toRadians()),
-                cy - cd.magnitude * sin(a0.toRadians())
+                cx + magnitude * cos(a0.toRadians()),
+                cy - magnitude * sin(a0.toRadians())
             )
         }
 
-        fun setMagnitude(m0: Double) {
+        fun magnitude(m0: Double) {
             set(
-                cx + m0 * cos(cd.angle.toRadians()),
-                cy - m0 * sin(cd.angle.toRadians())
+                cx + m0 * cos(angle.toRadians()),
+                cy - m0 * sin(angle.toRadians())
             )
         }
 
         fun linkedMove() {
             set(
-                cx + cd.magnitude * cos(cd.angle.toRadians()),
-                cy - cd.magnitude * sin(cd.angle.toRadians())
+                cx + magnitude * cos(angle.toRadians()),
+                cy - magnitude * sin(angle.toRadians())
             )
         }
     }
@@ -181,8 +193,8 @@ class ControlPoint(
     fun telemetry() {
         telemetryManager
             .add(id, "$id: (${x round 3}, ${y round 3})")
-            .add("$id t1", "$id t1: ${t1.cd.magnitude round 3}, ${t1.cd.angle round 3}°")
-            .add("$id t2", "$id t2: ${t2.cd.magnitude round 3}, ${t2.cd.angle round 3}°\n")
+            .add("$id t1", "$id t1: ${t1.magnitude round 3}, ${t1.angle round 3}°")
+            .add("$id t2", "$id t2: ${t2.magnitude round 3}, ${t2.angle round 3}°\n")
             .update()
     }
 

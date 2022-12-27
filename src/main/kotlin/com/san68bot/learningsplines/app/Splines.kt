@@ -35,14 +35,14 @@ class Splines : Application() {
         val c1 = ControlPoint(
             Point(350.0, 400.0),
             ControlPoint.ControlData(50.0, 150.0),
-            ControlPoint.ControlData(50.0, 330.0),
+            ControlPoint.ControlData(50.0, 330.0, ControlPoint.Movement.Mirrored),
             "c1", BetterColors.light_blue
         )
 
         val c2 = ControlPoint(
             Point(550.0, 400.0),
             ControlPoint.ControlData(50.0, 210.0),
-            ControlPoint.ControlData(50.0, 30.0),
+            ControlPoint.ControlData(50.0, 30.0, ControlPoint.Movement.Mirrored),
             "c2", BetterColors.green
         )
 

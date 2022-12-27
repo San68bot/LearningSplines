@@ -25,13 +25,22 @@ class ControlPoint(
 ): Point(origin.x, origin.y) {
 
     constructor(origin: Point, tangent1: ControlData, id: String, color: Color):
-            this(origin, tangent1, ControlData(Double.NaN, Double.NaN), id, color)
+            this(origin, tangent1, ControlData(Double.NaN, Double.NaN, Movement.Free), id, color)
 
     val t1 = ControlVector(tangent1)
     val t2 = ControlVector(tangent2)
     val t2Active get() = (!t2.cd.magnitude.isNaN() && !t2.cd.magnitude.isNaN())
 
-    data class ControlData(var magnitude: Double, var angle: Double)
+    private fun otherTangent(tangent: ControlVector): ControlVector {
+        return if (tangent == t1) t2 else t1
+    }
+
+    enum class Movement {
+        Free, Mirrored;
+        fun isFree() = (this == Free)
+        fun isMirrored() = (this == Mirrored)
+    }
+    data class ControlData(var magnitude: Double, var angle: Double, val movement: Movement = Movement.Free)
     inner class ControlVector(val cd: ControlData): Point(
         this@ControlPoint.x + cd.magnitude * cos(cd.angle.toRadians()),
         this@ControlPoint.y - cd.magnitude * sin(cd.angle.toRadians())
@@ -44,19 +53,14 @@ class ControlPoint(
             radius = 5.0
             fill = Color.rgb(30, 32, 41)
             stroke = color
-            strokeWidth = 2.0
+            strokeWidth = 2.5
             centerX = x
             centerY = y
             line.apply {
                 stroke = color
                 strokeWidth = 4.0
             }
-            construct()
-        }
-
-        fun setColor(color: Color) {
-            stroke = color
-            line.stroke = color
+            if (cd.movement.isFree()) construct()
         }
 
         private fun construct() {
@@ -111,7 +115,25 @@ class ControlPoint(
 
             cd.magnitude = this@ControlPoint distance this
             cd.angle = this@ControlPoint angle this
+            if (otherTangent(this).cd.movement.isMirrored()) {
+                otherTangent(this).setAngle(angleWrap(cd.angle - 180.0))
+                otherTangent(this).setMagnitude(cd.magnitude)
+            }
             telemetry()
+        }
+
+        fun setAngle(a0: Double) {
+            set(
+                cx + cd.magnitude * cos(a0.toRadians()),
+                cy - cd.magnitude * sin(a0.toRadians())
+            )
+        }
+
+        fun setMagnitude(m0: Double) {
+            set(
+                cx + m0 * cos(cd.angle.toRadians()),
+                cy - m0 * sin(cd.angle.toRadians())
+            )
         }
     }
 

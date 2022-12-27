@@ -44,35 +44,37 @@ class Bezier(
         log()
     }
 
-    /**
-     * DeCasteljau Algorithm
-     * Essentially Lerp until theres nothing left to lerp
-     */
-    private fun deCasteljau(t: Double, dataPoints: ArrayList<Point>): Point {
-        return when (dataPoints.size) {
-            2 -> lerp(t, dataPoints[0], dataPoints[1])
-            else -> deCasteljau(t, ArrayList((0 until dataPoints.size - 1).map { i ->
-                lerp(t, dataPoints[i], dataPoints[i+1])
-            }))
+    companion object {
+        /**
+         * DeCasteljau Algorithm
+         * Essentially Lerp until theres nothing left to lerp
+         */
+        fun deCasteljau(t: Double, dataPoints: ArrayList<Point>): Point {
+            return when (dataPoints.size) {
+                2 -> lerp(t, dataPoints[0], dataPoints[1])
+                else -> deCasteljau(t, ArrayList((0 until dataPoints.size - 1).map { i ->
+                    lerp(t, dataPoints[i], dataPoints[i+1])
+                }))
+            }
         }
-    }
 
-    /**
-     * Bernstein Algorithm
-     * Expanded out form of DeCasteljau Algorithm, combined all the lerps into one big equation
-     * Essentially a vector of each component scaled by the point
-     */
-    private fun bernstein(t: Double, p0: Double, p1: Double, p2: Double, p3: Double): Double {
-        return p0 * (-t.pow(3) + 3*t.pow(2) - 3*t + 1) +
-               p1 * (3*t.pow(3) - 6*t.pow(2) + 3*t) +
-               p2 * (-3*t.pow(3) + 3*t.pow(2)) +
-               p3 * (t.pow(3))
-    }
-    private fun bernstein(t: Double, p0: Point, p1: Point, p2: Point, p3: Point): Point {
-        return Point(
-            bernstein(t, p0.x, p1.x, p2.x, p3.x),
-            bernstein(t, p0.y, p1.y, p2.y, p3.y)
-        )
+        /**
+         * Bernstein Algorithm
+         * Expanded out form of DeCasteljau Algorithm, combined all the lerps into one big equation
+         * Essentially a vector of each component scaled by the point
+         */
+        fun bernstein(t: Double, p0: Double, p1: Double, p2: Double, p3: Double): Double {
+            return p0 * (-t.pow(3) + 3*t.pow(2) - 3*t + 1) +
+                    p1 * (3*t.pow(3) - 6*t.pow(2) + 3*t) +
+                    p2 * (-3*t.pow(3) + 3*t.pow(2)) +
+                    p3 * (t.pow(3))
+        }
+        fun bernstein(t: Double, p0: Point, p1: Point, p2: Point, p3: Point): Point {
+            return Point(
+                bernstein(t, p0.x, p1.x, p2.x, p3.x),
+                bernstein(t, p0.y, p1.y, p2.y, p3.y)
+            )
+        }
     }
 
     override fun log() {

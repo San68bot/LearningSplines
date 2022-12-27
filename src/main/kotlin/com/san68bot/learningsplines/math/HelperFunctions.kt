@@ -35,3 +35,6 @@ fun unitCircleArctan(point1: Point, point2: Point): Double {
 
 fun clamp(value: Double, min: Double, max: Double): Double = min(max(value, min), max)
 fun clamp(value: Double, range: ClosedFloatingPointRange<Double>): Double = clamp(value, range.start, range.endInclusive)
+
+operator fun Double.times(p: Point) = p * this
+operator fun Double.div(p: Point) = p / this

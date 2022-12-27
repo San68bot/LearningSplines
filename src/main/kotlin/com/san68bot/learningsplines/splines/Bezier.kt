@@ -58,17 +58,11 @@ class Bezier(
          * Expanded out form of DeCasteljau Algorithm, combined all the lerps into one big equation
          * Essentially a vector of each component scaled by the point
          */
-        fun bernstein(t: Double, p0: Double, p1: Double, p2: Double, p3: Double): Double {
+        fun bernstein(t: Double, p0: Point, p1: Point, p2: Point, p3: Point): Point {
             return p0 * (-t.pow(3) + 3*t.pow(2) - 3*t + 1) +
                     p1 * (3*t.pow(3) - 6*t.pow(2) + 3*t) +
                     p2 * (-3*t.pow(3) + 3*t.pow(2)) +
                     p3 * (t.pow(3))
-        }
-        fun bernstein(t: Double, p0: Point, p1: Point, p2: Point, p3: Point): Point {
-            return Point(
-                bernstein(t, p0.x, p1.x, p2.x, p3.x),
-                bernstein(t, p0.y, p1.y, p2.y, p3.y)
-            )
         }
     }
 
